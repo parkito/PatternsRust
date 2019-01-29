@@ -8,11 +8,24 @@ package com.coding.play.tasks
 //
 //Гарантируется, что число положительное.
 fun main() {
-    print("test")
+    isFibFirstTen(100)
 }
 
-fun isFibFirstTen(num: Int) {
+fun isFibFirstTen(num: Int): Boolean {
+    var fib = 1
+    var prev = 1
+    if (num == 1) {
+        return true
+    }
 
+    for (i in 0..8) {
+        if (num == fib) {
+            return true
+        }
+        fib += prev
+        prev = fib - prev
+    }
+    return false
 }
 
 fun isTriangleFirstTen(num: Int) {

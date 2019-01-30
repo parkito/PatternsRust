@@ -8,7 +8,16 @@ package com.coding.play.tasks
 //
 //Гарантируется, что число положительное.
 fun main() {
-    isFibFirstTen(100)
+    val scan = java.util.Scanner(System.`in`)
+
+    val a = scan.nextInt()
+
+    when {
+        isFibFirstTen(a) -> print("F")
+        isTriangleFirstTen(a) -> print("T")
+        isNumDegree(a) -> print("P")
+        else -> print("N")
+    }
 }
 
 fun isFibFirstTen(num: Int): Boolean {
@@ -28,10 +37,23 @@ fun isFibFirstTen(num: Int): Boolean {
     return false
 }
 
-fun isTriangleFirstTen(num: Int) {
-
+fun isTriangleFirstTen(num: Int): Boolean {
+    for (i in 0..9) {
+        val triNumber = 0.5 * i * (i + 1)
+        if (triNumber.toInt() == num) {
+            return true
+        }
+    }
+    return false
 }
 
-fun isNumDegree() {
-
+fun isNumDegree(num: Int): Boolean {
+    var deg = 1
+    for (i in 0..5) {
+        if (deg == num) {
+            return true
+        }
+        deg *= 10
+    }
+    return false
 }

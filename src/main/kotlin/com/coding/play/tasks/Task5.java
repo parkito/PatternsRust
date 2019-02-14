@@ -1,12 +1,7 @@
 package com.coding.play.tasks;
 
-import com.sun.java.accessibility.util.Translator;
-
-import java.awt.*;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Task5 {
 

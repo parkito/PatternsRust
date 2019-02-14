@@ -35,10 +35,6 @@ allprojects {
         }
     }
 
-    bootRepackage {
-        enabled = false
-    }
-
     repositories {
         mavenCentral()
         mavenLocal()

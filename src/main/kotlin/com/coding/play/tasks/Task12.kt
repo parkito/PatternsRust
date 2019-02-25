@@ -34,3 +34,5 @@ fun task(args: Array<String>) = println(10_000 * Array(3) { scan.nextInt() }
             }
         }
 )
+
+fun test2(args: Array<String>) = println(scan.nextDouble().let { Math.sin(it) * Math.cos(it) })

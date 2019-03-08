@@ -24,3 +24,14 @@ public class Task16 {
         }
     }
 }
+
+/*
+* public static void main(String[] args) throws IOException {
+    new BufferedReader(new InputStreamReader(System.in)).lines()
+                .map(s -> s.split(" "))
+                .flatMap(Arrays::stream)
+                .filter(s -> s.startsWith("J"))
+                .map(s -> s.substring(1))
+                .collect(LinkedList<String>::new, LinkedList::push, (l1, l2) -> {})
+                .forEach(System.out::println);
+}*/

@@ -35,3 +35,11 @@ public class Task16 {
                 .collect(LinkedList<String>::new, LinkedList::push, (l1, l2) -> {})
                 .forEach(System.out::println);
 }*/
+
+//    public static void main(String[] args) throws IOException {
+//        new BufferedReader(new InputStreamReader(System.in)).lines()
+//                .flatMap(s -> Stream.of(s.split(" ")))
+//                .filter(s -> s.startsWith("J")).map(s -> s.substring(1))
+//                .collect(Collectors.toCollection(LinkedList::new)).descendingIterator()
+//                .forEachRemaining(System.out::println);
+//    }

@@ -23,7 +23,7 @@ public class Task20 {
         return nElem;
     }
 
-    public static NavigableMap<Integer, String> getSubMap1(NavigableMap<Integer, String> map){
+    public static NavigableMap<Integer, String> getSubMap1(NavigableMap<Integer, String> map) {
         int first = map.firstKey() % 2 != 0 ? map.firstKey() : map.lastKey() - 4;
         return map.subMap(first, true, first + 4, true).descendingMap();
     }

@@ -17,24 +17,22 @@ public class JavaRest {
     private static final String SITE_URL = "https://jsonmock.hackerrank.com/api/stocks";
     private static final String AND = "&";
     private static final String DAY_SEARCH_REGEXP = "/search?date=%s";
-    private static final String PAGE_NUMBER_REGEXP = "page=$d";
     private static final String DEFAULT_PAGE_SIZE = "per_page=500";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("d-MMMM-yyyy", Locale.US);
+    private static final String GET_METHOD = "GET";
+    private static final String DATE_JSON_PART = "date";
+    private static final String SPACE = " ";
+    private static final String OPEN_JSON_PART = "open";
+    private static final String CLOSE_JSON_PART = "close";
 
     public static void main(String[] args) {
         openAndClosePrices("1-January-2000", "22-February-2000", "Monday");
     }
 
-
     static void openAndClosePrices(String firstDate, String lastDate, String weekDay) {
         List<String> dayList = getDayList(firstDate, lastDate, weekDay);
         for (String day : dayList) {
-            int pagesForDay = getPagesForDayAndPrintFirst(day);
-//            if (pagesForDay > 1) {
-//                for (int i = 2; i < pagesForDay; i++) {
-//                    printDataForDay(day, i);
-//                }
-//            }
+            printPageForDay(day);
         }
     }
 
@@ -57,13 +55,7 @@ public class JavaRest {
         return result;
     }
 
-
-    private static String buildHttpQuery(String firstDate, String lastDate) {
-        return null;
-    }
-
-
-    private static int getPagesForDayAndPrintFirst(String day) {
+    private static void printPageForDay(String day) {
         try {
             StringBuilder addressBuilder = new StringBuilder();
             String searchPart = String.format(DAY_SEARCH_REGEXP, day);
@@ -71,11 +63,9 @@ public class JavaRest {
 
             URL url = new URL(addressBuilder.toString());
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            con.setRequestMethod(GET_METHOD);
             con.setDoOutput(true);
 
-
-            // retrieve result
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             String line;
@@ -85,12 +75,33 @@ public class JavaRest {
             }
             br.close();
 
-            System.out.println(sb.toString());
+            while (true) {
+                int indexOfDate = sb.indexOf(DATE_JSON_PART);
+                if (indexOfDate > -1) {
+                    String dateSubstring = sb.substring(indexOfDate + 7, indexOfDate + 28);
+                    String dateString = dateSubstring.substring(0, dateSubstring.indexOf("\""));
+                    if (!dateString.equals(day)) {
+                        break;
+                    }
+                    System.out.print(dateString + SPACE);
+                    int indexOfOpen = sb.indexOf(OPEN_JSON_PART);
+                    if (indexOfOpen > -1) {
+                        String openSubstring = sb.substring(indexOfOpen + 6, indexOfOpen + 28);
+                        String openString = openSubstring.substring(0, openSubstring.indexOf(","));
+                        System.out.print(openString + SPACE);
+                        int indexOfClose = sb.indexOf(CLOSE_JSON_PART);
+                        if (indexOfClose > -1) {
+                            String closeSubstring = sb.substring(indexOfClose + 7, indexOfClose + 15);
+                            String closeString = closeSubstring.substring(0, closeSubstring.indexOf("}"));
+                            System.out.println(closeString);
+                        }
+                    }
+                }
+                break;
+            }
+
         } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
-
-        return 0;
-
     }
 }

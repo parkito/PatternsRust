@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class JavaRest {
 
@@ -18,7 +19,7 @@ public class JavaRest {
     private static final String DAY_SEARCH_REGEXP = "/search?date=%s";
     private static final String PAGE_NUMBER_REGEXP = "page=$d";
     private static final String DEFAULT_PAGE_SIZE = "per_page=500";
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MMMM-YYYY");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("d-MMMM-yyyy", Locale.US);
 
     public static void main(String[] args) {
         openAndClosePrices("1-January-2000", "22-February-2000", "Monday");
@@ -43,7 +44,7 @@ public class JavaRest {
         try {
             LocalDate startDate = LocalDate.from(DATE_FORMAT.parse(firstDate));
             LocalDate endDate = LocalDate.from(DATE_FORMAT.parse(lastDate));
-            DayOfWeek dayOfWeek = DayOfWeek.valueOf(weekDay);
+            DayOfWeek dayOfWeek = DayOfWeek.valueOf(weekDay.toUpperCase());
 
             for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
                 if (date.getDayOfWeek().equals(dayOfWeek)) {

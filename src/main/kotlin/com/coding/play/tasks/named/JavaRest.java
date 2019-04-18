@@ -2,70 +2,94 @@ package com.coding.play.tasks.named;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JavaRest {
 
-    public static final String SITE_URL = "https://jsonmock.hackerrank.com/api/stocks";
-    public static final String SEARCH_REGEXP = "https://jsonmock.hackerrank.com/api/stocks";
+    private static final String SITE_URL = "https://jsonmock.hackerrank.com/api/stocks";
+    private static final String AND = "&";
+    private static final String DAY_SEARCH_REGEXP = "/search?date=%s";
+    private static final String PAGE_NUMBER_REGEXP = "page=$d";
+    private static final String DEFAULT_PAGE_SIZE = "per_page=500";
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MMMM-YYYY");
+
+    public static void main(String[] args) {
+        openAndClosePrices("1-January-2000", "22-February-2000", "Monday");
+    }
+
 
     static void openAndClosePrices(String firstDate, String lastDate, String weekDay) {
-        String httpQuery = buildHttpQuery(firstDate, lastDate);
-        int pageNumber = getTotalPageNumber(httpQuery);
-
-        for (int i = 0; i < pageNumber; i++) {
-            printPricePage(httpQuery);
+        List<String> dayList = getDayList(firstDate, lastDate, weekDay);
+        for (String day : dayList) {
+            int pagesForDay = getPagesForDayAndPrintFirst(day);
+//            if (pagesForDay > 1) {
+//                for (int i = 2; i < pagesForDay; i++) {
+//                    printDataForDay(day, i);
+//                }
+//            }
         }
     }
+
+    private static List<String> getDayList(String firstDate, String lastDate, String weekDay) {
+        List<String> result = new ArrayList<>();
+
+        try {
+            LocalDate startDate = LocalDate.from(DATE_FORMAT.parse(firstDate));
+            LocalDate endDate = LocalDate.from(DATE_FORMAT.parse(lastDate));
+            DayOfWeek dayOfWeek = DayOfWeek.valueOf(weekDay);
+
+            for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+                if (date.getDayOfWeek().equals(dayOfWeek)) {
+                    result.add(DATE_FORMAT.format(date));
+                }
+            }
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
+        }
+        return result;
+    }
+
 
     private static String buildHttpQuery(String firstDate, String lastDate) {
         return null;
     }
 
 
-    private static String buildWebQuery(Map<String, String> parameters) throws Exception {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            String key = URLEncoder.encode(entry.getKey(), "UTF-8");
-            String value = URLEncoder.encode(entry.getValue(), "UTF-8");
-            sb.append(key).append("=").append(value).append("&");
+    private static int getPagesForDayAndPrintFirst(String day) {
+        try {
+            StringBuilder addressBuilder = new StringBuilder();
+            String searchPart = String.format(DAY_SEARCH_REGEXP, day);
+            addressBuilder.append(SITE_URL).append(searchPart).append(AND).append(DEFAULT_PAGE_SIZE);
+
+            URL url = new URL(addressBuilder.toString());
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setDoOutput(true);
+
+
+            // retrieve result
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
+            }
+            br.close();
+
+            System.out.println(sb.toString());
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
         }
-        return sb.toString().substring(0, sb.length() - 1);
-    }
 
-
-    private static int getTotalPageNumber(String query) {
-
+        return 0;
 
     }
-
-    private static void printPricePage(String query) {
-        String query = buildWebQuery(parameters);
-
-        URL url = new URL(address);
-
-        URLConnection urlc = url.openConnection();
-        urlc.setDoOutput(true);
-        urlc.setAllowUserInteraction(false);
-
-        // send query
-        PrintStream ps = new PrintStream(urlc.getOutputStream());
-        ps.print(query);
-        ps.close();
-
-        // retrieve result
-        BufferedReader br = new BufferedReader(new InputStreamReader(urlc.getInputStream(), StandardCharsets.UTF_8));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line);
-            sb.append("\n");
-        }
-        br.close();
-        return sb.toString();
-    }
+}

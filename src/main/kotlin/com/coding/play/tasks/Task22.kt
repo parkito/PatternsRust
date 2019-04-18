@@ -1,6 +1,7 @@
 package com.coding.play.tasks
 
 import java.util.*
+
 fun main(args: Array<String>) {
     val scan = Scanner(System.`in`)
     val sum = scan.nextInt() + scan.nextInt() + scan.nextInt()
@@ -12,6 +13,6 @@ fun main(args: Array<String>) {
     print(String(sumString).toInt())
 }
 
-fun main3(args: Array<String>) = println(Array(3){scan.nextInt()}.sum().toString().let{
+fun main3(args: Array<String>) = println(Array(3) { scan.nextInt() }.sum().toString().let {
     it.last() + it.substring(1, it.length - 1) + it.first()
 }.toInt())

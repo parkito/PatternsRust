@@ -2,23 +2,25 @@ package com.coding.play.tasks
 
 import java.util.*
 
+val allowedSymbols = arrayOf('[', ']', '{', '}', '(', ')')
+val openSymbols = arrayOf('[', '{', '(')
+
 fun main(args: Array<String>) {
     val scanner = Scanner(System.`in`)
-    parsing(args[0])
-//    parsing("([](){([])})")
-//    parsing("()[]}")
-//    parsing("{{[()]]")
+    parsing(scanner.next())
 }
 
 fun parsing(arg: String) {
-    val stack = Stack<Char>()
-
+    val stack = Stack<Pair<Char, Int>>()
     for (i in 0 until arg.length) {
         val c = arg[i]
-        if (c == '(' || c == '{' || c == '[') {
-            stack.push(c)
+        if (c !in allowedSymbols) {
+            continue
+        }
+        if (c in openSymbols) {
+            stack.push(Pair(c, i + 1))
         } else {
-            if (stack.isNotEmpty() && isOppositeTo(stack.peek(), c)) {
+            if (stack.isNotEmpty() && isOppositeTo(stack.peek().first, c)) {
                 stack.pop()
             } else {
                 println(i + 1)
@@ -28,6 +30,8 @@ fun parsing(arg: String) {
     }
     if (stack.isEmpty()) {
         println("Success")
+    } else {
+        println(stack.pop().second)
     }
 }
 

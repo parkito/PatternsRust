@@ -10,8 +10,8 @@ fun main() {
     val packages = ArrayList<Package>(bufferSize)
     for (i in 0 until numOfPackages) {
         val str = scanner.next().split(" ")
-        val arrival = str.get(0).toInt()
-        val duration = str.get(1).toInt()
+        val arrival = str[0].toInt()
+        val duration = str[1].toInt()
         packages.add(Package(i, arrival, duration))
     }
     processPackages(packages,bufferSize)

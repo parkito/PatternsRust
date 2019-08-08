@@ -1,20 +1,47 @@
 package com.coding.play.tasks;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class Task32 {
-    public static void main(String[] args) {
-        Set<Integer> integers = Set.of(1, 3, 5);
-        Set<Double> doubles = Set.of(2.0, 4.0, 6.0);
-        var numbers = union(integers, doubles);
-        System.out.println(numbers);
+
+    class A {
+        public void doA() {
+            System.out.println("A");
+        }
     }
 
+    class B extends A {
+        public void doB() {
+            System.out.println("B");
+        }
+    }
 
-    public static <E> Set<E> union(Set<? extends E> s1,
-                                   Set<? extends E> s2) {
-        return null;
+    class C extends B {
+        public void doC() {
+            System.out.println("C");
+        }
+    }
+
+    public static void main(String[] args) {
+
+    }
+
+    public A producer(List<? extends A> list, A a) {
+        list.get(0).doA();
+//        list.add(a) fail
+        return list.get(0);
+    }
+
+    public B consumer(List<? super B> list, B b) {
+        list.add(b);
+//        list.get(0).doA() fail
+//        return list.get(0); fail
+        return b;
+    }
+
+    public B combine(List<? super C> list, C c) {
+        list.add(c);
+//        return list.get(0);
+        return c;
     }
 }
